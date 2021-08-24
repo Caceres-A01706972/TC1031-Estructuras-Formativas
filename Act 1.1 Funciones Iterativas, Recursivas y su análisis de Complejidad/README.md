@@ -1,6 +1,6 @@
 <h2>Analisis de Complejidad</h2>
 
-<ul<strong>sumaIterativa</strong></ul>
+<ul><strong>sumaIterativa</strong></ul>
 
 El ciclo for hace la suma durante n iteraciones, donde n es el valor ingresado,
 entonces la variable i va desde 1 hasta n. Con un incremento de 1 en 1. Entonces podemos decir que tiene una complejisdad de O(n).
