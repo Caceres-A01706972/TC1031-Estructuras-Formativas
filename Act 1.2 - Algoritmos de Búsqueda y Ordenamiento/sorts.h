@@ -18,20 +18,13 @@ class Sorts{
 		void copyArray(std::vector<T>&, std::vector<T>&, int, int);
 		void mergeArray(std::vector<T>&, std::vector<T>&, int, int, int);
 		void splitMerge(std::vector<T>&, std::vector<T>&, int, int);
-		int partition(std::vector<T>&, int, int);
-		void quickHelper(std::vector<T>&, int, int);
 		int auxBinaria(std::vector<T>&, int, int, int);
     public:
         std::vector<T> busqSecuencial(const std::vector<T>&, int);
         std::vector<T> busqBinaria(const std::vector<T>&, int, int);
         std::vector<T> ordenaBurbuja(const std::vector<T>&);
 		std::vector<T> ordenaSeleccion(const std::vector<T>&);
-		std::vector<T> insertionSort(const std::vector<T>&);
-		std::vector<T> shellSort(const std::vector<T>&);
 		std::vector<T> ordenaMerge(const std::vector<T>&);
-		std::vector<T> quickSort(const std::vector<T> &source);
-		std::vector<T> bucketSort(const std::vector<T>&);
-		std::list<T>   mergeList(const std::list<T>&, const std::list<T>&);
 };
 
 template <class T>
@@ -198,7 +191,8 @@ std::vector<T> auxBinaria(const std::vector<T>&source, int low, int high, int nu
 
 template <class T>
 std::vector<T> busqBinaria(const std::vector<T>&source, int numero){
-	
+	std::vector<T> v(source);
+	auxBinaria(v, 0, v.size()-1, numero )
 }
 
 
