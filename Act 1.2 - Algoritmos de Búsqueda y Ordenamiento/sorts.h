@@ -5,197 +5,149 @@ A01706972
 Act 1.2 Algoritmos de Busqueda y Ordenamiento
 */
 
-#ifndef SORTS_H_
-#define SORTS_H_
+#ifndef sorts_h
+#define sorts_h
 
 #include <vector>
+#include <iostream>
 #include <list>
 
-template <class T>
-class Sorts{
-    private:
-        void swap(std::vector<T>&, int, int);
-		void copyArray(std::vector<T>&, std::vector<T>&, int, int);
-		void mergeArray(std::vector<T>&, std::vector<T>&, int, int, int);
-		void splitMerge(std::vector<T>&, std::vector<T>&, int, int);
-		int auxBinaria(std::vector<T>&, int, int, int);
-    public:
-        std::vector<T> busqSecuencial(const std::vector<T>&, int);
-        std::vector<T> busqBinaria(const std::vector<T>&, int, int);
-        std::vector<T> ordenaBurbuja(const std::vector<T>&);
-		std::vector<T> ordenaSeleccion(const std::vector<T>&);
-		std::vector<T> ordenaMerge(const std::vector<T>&);
+template < class T >
+class Sorts {
+  private:
+    void swap(std::vector<T>&vec, int, int); 
+    void copyArray(std::vector<T>& , std::vector<T>& , int , int );
+    void mergeArray(std::vector<T>& A, std::vector<T>& B, int i, int j, int k);
+    void mergeSplit(std::vector<T>& ,std::vector<T>& , int , int );   
+	
+  public:
+    void ordenaSeleccion(std::vector<T>&);
+    void ordenaBurbuja(std::vector<T>&);
+    void ordenaMerge(std::vector<T>&);
+    int busqBinaria(std::vector<T>&, int);
+    int busqSecuencial(std::vector<T>&, int);
 };
 
 template <class T>
-void Sorts<T>::swap(std::vector<T> &v, int i, int j) {
-	T aux = v[i];
-	v[i] = v[j];
-	v[j] = aux;
+void Sorts<T>::swap(std::vector<T> &vec, int i, int j) {
+	int aux = vec[i];
+	vec[i] = vec[j];
+	vec[j] = aux;
 }
 
 template <class T>
-std::vector<T> Sorts<T>::ordenaSeleccion(const std::vector<T> &source){
-    std::vector<T> v(source);
-    /*
-    for (int i = v.size() - 1; i > 0; i--){
-		int pos = 0;
-		for (int j = 1; j <= i; j++){
-			if (v[j] > v[pos]){
-				pos = j;
+void Sorts<T>::ordenaSeleccion(std::vector<T> &vec){ 
+
+  for (int i = 0; i < vec.size(); i++) {
+		int index = i;
+		for (int j = i; j <= vec.size() - 1; j++) {
+			if (vec[j] < vec[index]) {
+				index = j;
 			}
 		}
 
-		if (pos != i) {
-			swap(v, i, pos);
+		if (index != i) {
+			swap(vec, i, index);
 		}
 	}
-	return v;
-}*/
+}
 
-    for(int i = 0; i < v.size(); i++){
-        int min = i;
-        for(int j = i+1; j< v.size(); j++){
-            if(v[j] < v[min]){
-                min = j;
+
+template <class T>
+void Sorts<T>::ordenaBurbuja(std::vector<T> &vec) {
+
+    for (int i = vec.size() - 1; i > 0; i--) {
+        for (int j = 0; j < i; j++) {
+            if (vec[j] > vec[j + 1]) {
+                swap(vec, j, j + 1);
             }
         }
-        if(min != i){
-            swap(v,i,min);
-        }
     }
-    return v;
-
-}
-
-
-template <class T>
-std::vector<T> Sorts<T>::ordenaBurbuja(const std::vector<T> &source) {
-    std::vector<T> v(source);
-
-    for (int i = v.size() - 1; i > 0; i--) {
-		for (int j = 0; j < i; j++) {
-			if (v[j] > v[j + 1]) {
-				swap(v, j, j + 1);
-			}
-		}
-	}
-	return v;
-}
-
-
-template <class T>
-std::vector<T> Sorts<T>::ordenaMerge(const std::vector<T> &source){
-    std::vector<T> v(source);
-    std::vector<T> tmp(v.size());
-
-    splitMerge(v, tmp, 0, v.size()-1);
-
-    return v;
 }
 
 template <class T>
-void Sorts<T>::splitMerge(std::vector<T> &A, std::vector<T> &B, int low, int high) {
+void Sorts<T>::ordenaMerge(std::vector<T> &vec) {
+	std::vector<T> aux(vec.size());
 
-	if((high-low) < 1){
+	mergeSplit(vec, aux, 0, vec.size() - 1);
+}
+
+template <class T>
+void Sorts<T>::mergeSplit(std::vector<T> &A, std::vector<T> &B, int inf, int sup) {
+	int med;
+
+	if ( (sup - inf) < 1 ) {
 		return;
 	}
-
-	int mid = (high + low)/2;
-
-	splitMerge(A, B, low, mid);
-	splitMerge(A, B, mid + 1, high);
-	mergeArray(A, B, low, mid, high);
-	copyArray(A, B, low, high);
-
+	med = (sup + inf) / 2;
+	mergeSplit(A, B, inf, med);
+	mergeSplit(A, B, med + 1, sup);
+	mergeArray(A, B, inf, med, sup);
+	copyArray(A, B, inf, sup);
 }
 
 template <class T>
-void Sorts<T>::mergeArray(std::vector<T> &A, std::vector<T> &B, int low, int mid, int high) {
+void Sorts<T>::mergeArray(std::vector<T> &A, std::vector<T> &B, int inf, int med, int sup) {
+	int i, j, k;
 
-	int i = low;
-	int j = mid + 1;
-	int k = low;
+	i = inf;
+	j = med + 1;
+	k = inf;
 
-	while (i <= mid &&j <= high){
-		if(A[i] < A[j]){
+	while (i <= med &&j <= sup) {
+		if (A[i] < A[j]) {
 			B[k] = A[i];
 			i++;
-		}else{
+		} else {
 			B[k] = A[j];
 			j++;
 		}
 		k++;
 	}
-	if(i > mid){
-		for(; j <= high; j++){
+	if (i > med) {
+		for (; j <= sup; j++) {
 			B[k++] = A[j];
 		}
-	} else{
-		for(; i <= mid; i++){
+	} else {
+		for (; i <= med; i++) {
 			B[k++] = A[i];
 		}
 	}
 }
 
 template <class T>
-void Sorts<T>::copyArray(std::vector<T> &A, std::vector<T> &B, int low, int high) {
-	for(int i = low; i <= high; i++){
+void Sorts<T>::copyArray(std::vector<T> &A, std::vector<T> &B, int inf, int sup) {
+	for (int i = inf; i <= sup; i++) {
 		A[i] = B[i];
 	}
 }
 
-
 template <class T>
-std::vector<T> Sorts<T>::busqSecuencial(const std::vector<T> &source, int numero) {
-    std::vector<T> v(source);
-	
-	int i = 0;
-	bool flag = false;
-	while(flag == false && i < v.size()-1){
-		if(v[i] == numero){
-			flag = true;
-		}
-		i++;
-	}
-	if(flag == true){
-		return i;
-	} else if(flag == false){
-		return -1;
-	}
-}	
-
-
-template <class T>
-std::vector<T> auxBinaria(const std::vector<T>&source, int low, int high, int numero){
-	int mid;
-
-	if(low <= high){
-		mid = (low + high)/2;
-		if(numero == arr[mid]){
-			return mid;
-		} else if(numero < arr[mid]){
-			return auxBinaria(arr, low, mid-1, numero);
-		} else if(numero > arr[mid]){
-			return auxBinaria(arr, mid+1, high, numero);
-		}
-	}
-
-	if (arr[low] != val){
-		return -1;
-	} else{
-		return low;
-	}
-
+int Sorts<T>::busqSecuencial(std::vector<T> &vec, int val) {
+    for (int i = 0; i < vec.size(); i++) {
+        if (val == vec[i])
+            return i;
+    }
+    return -1;
 }
 
 template <class T>
-std::vector<T> busqBinaria(const std::vector<T>&source, int numero){
-	std::vector<T> v(source);
-	auxBinaria(v, 0, v.size()-1, numero )
+int Sorts<T>::busqBinaria(std::vector<T> &vec, int val) {
+  	ordenaBurbuja(vec);
+	int inf = 0;
+	int sup = vec.size() - 1;
+
+	while (inf < sup) {
+		int med = (sup + inf) / 2;
+		if (val == vec[med]) {
+			return med;
+		} else if (val > vec[med]) {
+			inf = med + 1;
+		} else if (val < vec[med]) {
+			sup = med - 1;
+		}
+	}
+	return -1;
 }
 
-
-
-
-#endif /* SORTS_H_ */
+#endif
