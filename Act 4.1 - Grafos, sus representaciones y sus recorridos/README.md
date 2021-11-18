@@ -1,4 +1,4 @@
-<h1>Analisis de Complejidad</h1>
+<h1>Análisis de Complejidad</h1>
 
 <li>loadGraphList()</li>
 El Analisis de Complejidad de este algoritmo seria de O(n) porque el programa va a tener que agregar n vertices y edges. 
